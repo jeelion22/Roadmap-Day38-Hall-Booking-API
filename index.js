@@ -78,7 +78,6 @@ app.post(
 
 // route for booking rooms
 // it is enabled only for registered customers
-
 app.post(
   "/rooms/booking/:roomId",
 
@@ -193,7 +192,7 @@ app.post(
 
 // get rooms information
 app.get("/rooms", (req, res) => {
-  res.send(rooms);
+  res.send({ message: rooms });
 });
 
 // rooms' booking history
