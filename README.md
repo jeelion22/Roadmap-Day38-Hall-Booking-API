@@ -22,3 +22,17 @@ APIs' Links:
 [booking history](https://roadmap-day38-hall-booking-api.onrender.com/rooms/booking/history)
 
 [customers' information](https://roadmap-day38-hall-booking-api.onrender.com/customers)
+
+## Images of responses for some get method requests from Chrome
+
+Rooms Available:
+
+![Rooms Availalble](./assets/img1.png)
+
+Customers Information:
+
+![Customers Information](./assets/img2.png)
+
+Rooms Booking History
+
+![Rooms Booking History](https://roadmap-day38-hall-booking-api.onrender.com/rooms)
