@@ -127,7 +127,7 @@ app.post(
     // checks customer sent room id with existing roomId **With Params passed to the path**
     if (parseInt(roomId) != req.body.roomId) {
       return res.json({
-        message: `requested roomId ${roomId} is not available`,
+        message: `requested roomId ${req.body.roomId} didn't match with  ${roomId}(params) `,
       });
     }
 
