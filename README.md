@@ -7,17 +7,17 @@ This server is deployed in [Render](https://render.com/)
 
 The complete documentation for using APIs is available at [postman api documentation](https://documenter.getpostman.com/view/21877600/2sA3Bj6t2f)
 
-APIs' Links:
+## APIs' Links:
 
 [Homepage](https://roadmap-day38-hall-booking-api.onrender.com/)
 
-[create room for rent](https://roadmap-day38-hall-booking-api.onrender.com/rooms/create)
+[create room for rent](https://roadmap-day38-hall-booking-api.onrender.com/rooms/create) - **POST**
 
 [rooms availability](https://roadmap-day38-hall-booking-api.onrender.com/rooms)
 
-[customer signup](https://roadmap-day38-hall-booking-api.onrender.com/customers/create)
+[customer signup](https://roadmap-day38-hall-booking-api.onrender.com/customers/create) - **POST**
 
-[hall booking](https://roadmap-day38-hall-booking-api.onrender.com/rooms/booking/1) - **Note: Here params is 1 representing for booking room with id of 1**
+[hall booking](https://roadmap-day38-hall-booking-api.onrender.com/rooms/booking/1) - **POST, Note: Here params is 1 representing for booking room with id of 1**
 
 [booking history](https://roadmap-day38-hall-booking-api.onrender.com/rooms/booking/history)
 
