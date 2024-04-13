@@ -32,9 +32,9 @@ app.get("/", (req, res) => {
 app.post(
   "/rooms/create",
   [
-    body("roomName").notEmpty().isString(),
+    body("roomName").notEmpty().isString().trim().escape(),
     body("seatsTotal").notEmpty().isInt(),
-    body("amenities").notEmpty().isArray(),
+    body("amenities").notEmpty().isArray().trim().escape(),
     body("pricePerHour").notEmpty().isFloat(),
   ],
   (req, res) => {
@@ -53,11 +53,10 @@ app.post(
   }
 );
 
-// route for creating customer
-// it accepts only customer name
+// route for creating customer and it accepts only customer name
 app.post(
   "/customers/create",
-  body("customerName").notEmpty().isString(),
+  body("customerName").notEmpty().isString().trim().escape(),
   (req, res) => {
     const errors = validationResult(req);
 
@@ -85,12 +84,12 @@ app.post(
 
   [
     body("roomId").notEmpty().isInt({ gt: 0 }),
-    body("roomName").notEmpty().isString(),
+    body("roomName").notEmpty().isString().trim().escape(),
     body("customerId").notEmpty().isInt(),
-    body("customerName").notEmpty().isString(),
+    body("customerName").notEmpty().isString().trim().escape(),
     body("dateOfBooking").notEmpty().isDate({ format: "DD-MM-YYYY" }),
-    body("startTime").notEmpty().isString(),
-    body("endTime").notEmpty().isString(),
+    body("startTime").notEmpty().isString().trim().escape(),
+    body("endTime").notEmpty().isString().trim().escape(),
     body("seatsRequired").notEmpty().isInt({ gt: 0 }),
   ],
 
