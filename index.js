@@ -52,7 +52,7 @@ app.post(
 // route for creating customer
 // it accepts only customer name
 app.post(
-  "/customer/create",
+  "/customers/create",
   body("customerName").notEmpty().isString(),
   (req, res) => {
     const errors = validationResult(req);
