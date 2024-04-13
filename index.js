@@ -14,7 +14,7 @@ const rooms = [];
 const customers = [];
 const booking = [];
 
-// root
+// root route
 app.get("/", (req, res) => {
   res.send({
     message: {
