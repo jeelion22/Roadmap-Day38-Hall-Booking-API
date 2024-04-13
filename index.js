@@ -22,6 +22,8 @@ app.get("/", (req, res) => {
       info_for_customers: "To book seats in a hall, you need to sign up",
       api_documentation:
         "https://documenter.getpostman.com/view/21877600/2sA3Bj6t2f",
+      github_repo:
+        "https://github.com/jeelion22/Roadmap-Day38-Hall-Booking-API",
     },
   });
 });
