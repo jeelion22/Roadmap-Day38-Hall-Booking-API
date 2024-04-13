@@ -14,6 +14,18 @@ const rooms = [];
 const customers = [];
 const booking = [];
 
+// root
+app.get("/", (req, res) => {
+  res.send({
+    message: {
+      info_for_rooms: "if rooms not available for booking, then create rooms",
+      room_creating_link: "",
+      info_for_customers: "To book seats in a hall, you need to sign up",
+      signingup_link: "",
+    },
+  });
+});
+
 // route creating room
 app.post(
   "/rooms/create",
