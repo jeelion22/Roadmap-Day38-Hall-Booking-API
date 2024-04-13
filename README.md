@@ -17,7 +17,7 @@ APIs' Links:
 
 [customer signup](https://roadmap-day38-hall-booking-api.onrender.com/customers/create)
 
-[hall booking](https://roadmap-day38-hall-booking-api.onrender.com/rooms/booking/1) - **Note: here params is 1 representing for booking room id of 1**
+[hall booking](https://roadmap-day38-hall-booking-api.onrender.com/rooms/booking/1) - **Note: Here params is 1 representing for booking room with id of 1**
 
 [booking history](https://roadmap-day38-hall-booking-api.onrender.com/rooms/booking/history)
 
