@@ -7,13 +7,15 @@ const PORT = 4000;
 app.use(express.json());
 
 const rooms = [];
+const customers = [];
 const booking = [];
 
 // creating room
 app.post(
   "/rooms/create",
   [
-    body("seatsAvailable").notEmpty().isInt(),
+    body("roomName").notEmpty().isString(),
+    body("seatsTotal").notEmpty().isInt(),
     body("amenities").notEmpty().isArray(),
     body("pricePerHour").notEmpty().isFloat(),
   ],
@@ -24,25 +26,52 @@ app.post(
     }
 
     const room = {};
-    room.id = rooms.length + 1;
+    room.roomId = rooms.length + 1;
     room.seatsBooked = 0;
+    room.seatsAvailable = req.body.seatsTotal;
     Object.assign(room, req.body);
     rooms.push(room);
     res.status(201).send(room);
   }
 );
 
-// booking rooms
-
+// create customer
 app.post(
-  "/rooms/book/:roomId",
+  "/customer/create",
+  body("customerName").notEmpty().isString(),
+  (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const customer = {};
+
+    customer.customerId = customers.length + 1;
+    customer.bookingHistory = [];
+
+    Object.assign(customer, req.body);
+    customers.push(customer);
+    res.status(201).json({
+      message: `Your account has been created with customer_id of ${customer.customerId}`,
+    });
+  }
+);
+
+// booking rooms
+app.post(
+  "/rooms/booking/:roomId",
 
   [
-    body("customerName").notEmpty().isAlphanumeric(),
+    body("roomId").notEmpty().isInt({ gt: 0 }),
+    body("roomName").notEmpty().isString(),
+    body("customerId").notEmpty().isInt(),
+    body("customerName").notEmpty().isString(),
     body("dateOfBooking").notEmpty().isDate({ format: "DD-MM-YYYY" }),
     body("startTime").notEmpty().isString(),
     body("endTime").notEmpty().isString(),
-    body("seatsRequired").notEmpty().isInt(),
+    body("seatsRequired").notEmpty().isInt({ gt: 0 }),
   ],
 
   (req, res) => {
@@ -51,44 +80,77 @@ app.post(
       return res.status(400).send({ errors: errors.array() });
     }
 
+    const customer = customers.find(
+      (cust) => cust.customerId == req.body.customerId
+    );
+
+    if (!customer) {
+      return res.json({
+        message: "You are not an existing customer, please signup!",
+      });
+    }
+
+    if (customer.customerName != req.body.customerName) {
+      return res.json({ message: `Your name and customer id didn't match` });
+    }
+
     if (rooms.length === 0) {
       return res.status(404).json({ message: "No rooms available" });
     }
 
     const roomId = req.params.roomId;
-    const room = rooms.find((room) => room.id == parseInt(roomId));
+    const room = rooms.find((room) => room.roomId == parseInt(roomId));
 
     if (!room) {
       return res
         .status(404)
-        .json({ message: `Room is not found with number ${roomId}` });
+        .json({ message: `Sorry, room number:${roomId} is not found` });
+    }
+
+    if (room.roomName != req.body.roomName) {
+      return res.json({ message: "roomId didn't match with room name" });
+    }
+
+    if (parseInt(roomId) != req.body.roomId) {
+      return res.json({
+        message: `requested roomId ${roomId} is not available`,
+      });
     }
 
     const bookingInfo = req.body;
 
     let updatedRoom;
 
-    if (
-      bookingInfo.seatsRequired <= room.seatsAvailable &&
-      bookingInfo.seatsRequired > 0
-    ) {
-      bookingInfo.bookingId = booking.length + 1;
-      booking.push(bookingInfo);
-
-      room.seatsBooked += bookingInfo.seatsRequired;
-      bookingInfo.isBooked = true;
-
-      updatedRoom = room;
-
-      rooms.forEach((room, index) => {
-        if (room.id == roomId) {
-          rooms[index] = updatedRoom;
-        }
+    if (room.seatsAvailable === 0) {
+      return res.json({
+        message: "All seats booked, try in next available rooms",
       });
     }
 
+    if (bookingInfo.seatsRequired > room.seatsAvailable) {
+      return res.json({
+        message: `Sorry for inconvenience, you can not book more than available seats ${room.seatsAvailable}`,
+      });
+    }
+
+    bookingInfo.bookingId = booking.length + 1;
+    booking.push(bookingInfo);
+
+    room.seatsBooked += bookingInfo.seatsRequired;
+    room.seatsAvailable = room.seatsTotal - room.seatsBooked;
+    bookingInfo.isBooked = true;
+
+    updatedRoom = room;
+
+    rooms.forEach((room, index) => {
+      if (room.id == roomId) {
+        rooms[index] = updatedRoom;
+      }
+    });
+
+    customer.bookingHistory.push(bookingInfo);
+
     res.status(201).send(bookingInfo);
-    console.log(booking);
   }
 );
 
@@ -99,4 +161,16 @@ app.get("/rooms", (req, res) => {
 
 app.listen(PORT, () => {
   console.log("server connected successfully!");
+});
+
+// rooms' booking history
+
+app.get("/rooms/booking/history", (req, res) => {
+  res.json({ message: booking });
+});
+
+// get customers information
+
+app.get("/customers", (req, res) => {
+  res.json({ message: customers });
 });
