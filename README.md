@@ -35,4 +35,4 @@ Customers Information:
 
 Rooms Booking History
 
-![Rooms Booking History](https://roadmap-day38-hall-booking-api.onrender.com/rooms)
+![Rooms Booking History](./assets/img3.png)
