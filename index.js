@@ -94,6 +94,7 @@ app.post(
 
     customer.customerId = customers.length + 1;
     customer.bookingHistory = [];
+    customer.bookingCount = 0;
 
     Object.assign(customer, req.body);
     customers.push(customer);
@@ -212,6 +213,7 @@ app.post(
     // });
 
     customer.bookingHistory.push(bookingInfo);
+    customer.bookingCount = customer.bookingHistory.length;
 
     res.status(201).send(bookingInfo);
   }
