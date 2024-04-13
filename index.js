@@ -1,16 +1,20 @@
+// server packages are imported
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 
+// initiallize app and enable port
 const app = express();
 const PORT = 4000;
 
+// add middleware for json for body
 app.use(express.json());
 
+// initialize necessary variables
 const rooms = [];
 const customers = [];
 const booking = [];
 
-// creating room
+// route creating room
 app.post(
   "/rooms/create",
   [
@@ -35,7 +39,8 @@ app.post(
   }
 );
 
-// create customer
+// route for creating customer
+// it accepts only customer name
 app.post(
   "/customer/create",
   body("customerName").notEmpty().isString(),
@@ -54,12 +59,14 @@ app.post(
     Object.assign(customer, req.body);
     customers.push(customer);
     res.status(201).json({
-      message: `Your account has been created with customer_id of ${customer.customerId}`,
+      message: `Your account has been created successfully! with customer_id of ${customer.customerId}`,
     });
   }
 );
 
-// booking rooms
+// route for booking rooms
+// it is enabled only for registered customers
+
 app.post(
   "/rooms/booking/:roomId",
 
@@ -80,24 +87,29 @@ app.post(
       return res.status(400).send({ errors: errors.array() });
     }
 
+    // finds customer by custermerId
     const customer = customers.find(
       (cust) => cust.customerId == req.body.customerId
     );
 
+    // if customer is not available, asks customer for signing up
     if (!customer) {
       return res.json({
         message: "You are not an existing customer, please signup!",
       });
     }
 
+    // checks matching of customer name with existing custmer(as found by id )
     if (customer.customerName != req.body.customerName) {
       return res.json({ message: `Your name and customer id didn't match` });
     }
 
+    // if no rooms creared, your want to create it first
     if (rooms.length === 0) {
       return res.status(404).json({ message: "No rooms available" });
     }
 
+    // checks room availability with given roomId
     const roomId = req.params.roomId;
     const room = rooms.find((room) => room.roomId == parseInt(roomId));
 
@@ -107,46 +119,59 @@ app.post(
         .json({ message: `Sorry, room number:${roomId} is not found` });
     }
 
+    // checks roomId matches withroomName
     if (room.roomName != req.body.roomName) {
       return res.json({ message: "roomId didn't match with room name" });
     }
 
+    // checks customer sent room id with existing roomId **With Params passed to the path**
     if (parseInt(roomId) != req.body.roomId) {
       return res.json({
         message: `requested roomId ${roomId} is not available`,
       });
     }
 
+    // stores booking information
     const bookingInfo = req.body;
 
+    // initialize update room
     let updatedRoom;
 
+    // checks seets availability
     if (room.seatsAvailable === 0) {
       return res.json({
         message: "All seats booked, try in next available rooms",
       });
     }
 
+    // checks requested seats is more than available
     if (bookingInfo.seatsRequired > room.seatsAvailable) {
       return res.json({
         message: `Sorry for inconvenience, you can not book more than available seats ${room.seatsAvailable}`,
       });
     }
 
+    // created booking is
     bookingInfo.bookingId = booking.length + 1;
     booking.push(bookingInfo);
 
+    // updates seatsBooked in room
     room.seatsBooked += bookingInfo.seatsRequired;
+
+    // updates seats availablity in the room
     room.seatsAvailable = room.seatsTotal - room.seatsBooked;
+
+    // adds booking status
     bookingInfo.isBooked = true;
 
-    updatedRoom = room;
+    // asigns room to updated room
+    // updatedRoom = room;
 
-    rooms.forEach((room, index) => {
-      if (room.id == roomId) {
-        rooms[index] = updatedRoom;
-      }
-    });
+    // rooms.forEach((room, index) => {
+    //   if (room.id == roomId) {
+    //     rooms[index] = updatedRoom;
+    //   }
+    // });
 
     customer.bookingHistory.push(bookingInfo);
 
@@ -154,23 +179,22 @@ app.post(
   }
 );
 
-// get rooms
+// get rooms information
 app.get("/rooms", (req, res) => {
   res.send(rooms);
 });
 
-app.listen(PORT, () => {
-  console.log("server connected successfully!");
-});
-
 // rooms' booking history
-
 app.get("/rooms/booking/history", (req, res) => {
   res.json({ message: booking });
 });
 
 // get customers information
-
 app.get("/customers", (req, res) => {
   res.json({ message: customers });
+});
+
+// webserver listening
+app.listen(PORT, () => {
+  console.log("server connected successfully!");
 });
