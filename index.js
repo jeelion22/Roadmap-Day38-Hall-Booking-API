@@ -10,7 +10,33 @@ const PORT = 4000;
 app.use(express.json());
 
 // initialize necessary variables
-const rooms = [];
+const rooms = [
+  {
+    roomId: 1,
+    seatsBooked: 0,
+    seatsAvailable: 25,
+    roomName: "Royal Socity of Chemistry Hall",
+    seatsTotal: 25,
+    amenities: [
+      "fully airconditoned",
+      "tablet for each seat",
+      "headphones",
+      "food",
+      "softdringks",
+    ],
+    pricePerHour: 7.99,
+  },
+
+  {
+    roomId: 2,
+    seatsBooked: 0,
+    seatsAvailable: 20,
+    roomName: "ECG Sutharsan Hall",
+    seatsTotal: 25,
+    amenities: ["tablet for each seat", "headphones", "cafeteria", "library"],
+    pricePerHour: 4.99,
+  },
+];
 const customers = [];
 const booking = [];
 
