@@ -20,6 +20,8 @@ app.get("/", (req, res) => {
     message: {
       info_for_rooms: "if rooms not available for booking, then create rooms",
       info_for_customers: "To book seats in a hall, you need to sign up",
+      api_documentation:
+        "https://documenter.getpostman.com/view/21877600/2sA3Bj6t2f",
     },
   });
 });
